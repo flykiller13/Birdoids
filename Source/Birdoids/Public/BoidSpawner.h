@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Boid.h"
 #include "BoidSpawner.generated.h"
 
 UCLASS()
@@ -25,5 +26,11 @@ public:
 
 	UPROPERTY( EditAnywhere, BlueprintReadWrite )
 		int32 BoidsToSpawn = 5;
+
+	UPROPERTY( EditAnywhere, BlueprintReadWrite )
+		TSubclassOf<ABoid> BoidClass;
+
+	UFUNCTION( BlueprintCallable )
+		void SpawnBoids();
 
 };

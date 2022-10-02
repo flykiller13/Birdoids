@@ -84,11 +84,11 @@ public:
 		float MaxSpeed = 80.f;
 
 	// The boid manager that keeps reference of the boid.
-	UPROPERTY( VisibleAnywhere, BlueprintReadWrite, Category = "*Boid|Properties" )
+	UPROPERTY( VisibleAnywhere, BlueprintReadWrite, Category = "*Boid|Properties", meta = (ExposeOnSpawn = "true"))
 		UBoidManager* BoidManager;
 
 	// Actor to which the boids will attract. A lone boid without an attraction point will fly straight forward.
-	UPROPERTY( VisibleAnywhere, BlueprintReadWrite, Category = "*Boid|Properties" )
+	UPROPERTY( VisibleAnywhere, BlueprintReadWrite, Category = "*Boid|Properties", meta = (ExposeOnSpawn = "true") )
 		AActor* AttractionPoint;
 
 	/* Weights */
@@ -147,5 +147,13 @@ public:
 	/** Returns the boid's current velocity. */
 	UFUNCTION( BlueprintPure, BlueprintCallable, Category = "*Boid|Movement" )
 		FVector GetCurrentVelocity();
+
+	/** This is the Boid's tick function. The interval can be controlled with BoidTickTime */
+	UFUNCTION( BlueprintCallable, Category = "*Boid|Movement" )
+		void BoidTick();
+
+	FTimerHandle BoidTimerHandle;
+
+	float BoidTickTime = 0.01f;
 	
 };

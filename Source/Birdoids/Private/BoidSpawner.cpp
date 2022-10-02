@@ -2,6 +2,7 @@
 
 
 #include "BoidSpawner.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ABoidSpawner::ABoidSpawner()
@@ -15,6 +16,8 @@ ABoidSpawner::ABoidSpawner()
 void ABoidSpawner::BeginPlay()
 {
 	Super::BeginPlay();
+
+	SpawnBoids();
 	
 }
 
@@ -23,5 +26,19 @@ void ABoidSpawner::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void ABoidSpawner::SpawnBoids()
+{
+	for ( int i = 0; i < BoidsToSpawn; i++ )
+	{
+		ABoid* NewBoid = GetWorld()->SpawnActorDeferred<ABoid>( BoidClass, GetActorTransform());
+
+		if ( NewBoid )
+		{
+			NewBoid->AttractionPoint = this;
+			UGameplayStatics::FinishSpawningActor( NewBoid, GetActorTransform() );
+		}
+	}
 }
 

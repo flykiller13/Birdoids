@@ -44,6 +44,8 @@ void ABoid::BeginPlay()
 
 	// Set vision range
 	VisionRange = VisionSphere->GetScaledSphereRadius();
+
+	GetWorldTimerManager().SetTimer( BoidTimerHandle, this, &ABoid::BoidTick, BoidTickTime, true );
 }
 
 // Called every frame
@@ -51,6 +53,17 @@ void ABoid::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
 
+	
+}
+
+// Return Current Velocity.
+FVector ABoid::GetCurrentVelocity()
+{
+	return CurrentVelocity;
+}
+
+void ABoid::BoidTick()
+{
 	FVector FlockVel( 0 );
 	FVector FlockCenter( 0 );
 	FVector SeparationForce( 0 );
@@ -67,7 +80,7 @@ void ABoid::Tick( float DeltaTime )
 	}
 
 	CurrentVelocity += FlockVel + FlockCenter + SeparationForce; // Add rules to velocity
-	CurrentVelocity += ( GetAttractionPointForce() * AttractionPointWeight ); // Add force to move towards the attraction point (if exists)
+	CurrentVelocity += (GetAttractionPointForce() * AttractionPointWeight); // Add force to move towards the attraction point (if exists)
 
 	// Steer away from obstacles
 	FHitResult Hit;
@@ -82,19 +95,13 @@ void ABoid::Tick( float DeltaTime )
 
 	//Moves the Boid
 	FVector TargetLocation = GetActorLocation() + CurrentVelocity;
-	FVector NewLocation = FMath::VInterpTo( GetActorLocation(), TargetLocation, DeltaTime, InterpSpeed );
+	FVector NewLocation = FMath::VInterpTo( GetActorLocation(), TargetLocation, BoidTickTime, InterpSpeed );
 	SetActorLocation( NewLocation );
 
 	//Makes Rot from Z cause Boid mesh points to Z direction
 	FRotator TargetRotation = UKismetMathLibrary::MakeRotFromZ( CurrentVelocity );
-	FRotator NewRotation = FMath::RInterpTo( BoidMesh->GetRelativeRotation(), TargetRotation, DeltaTime, InterpSpeed );
+	FRotator NewRotation = FMath::RInterpTo( BoidMesh->GetRelativeRotation(), TargetRotation, BoidTickTime, InterpSpeed );
 	BoidMesh->SetRelativeRotation( NewRotation );
-}
-
-// Return Current Velocity.
-FVector ABoid::GetCurrentVelocity()
-{
-	return CurrentVelocity;
 }
 
 FVector ABoid::GetOffsetToFlockCenter_Implementation()
