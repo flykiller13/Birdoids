@@ -20,6 +20,8 @@ The Boid Manager keeps reference of the boids.
 
 Rules can be added easily by adding to the boid's current velocity and the plan is to add as much behavior rules as possible.
 
+One thing I that I did differently than most other implementations I've seen - In the implementation of the separation force, I've used the inverse of the distance between the boid and the perceived flock instead of the distance itself. This allows the boid to smoothly cruise around the flock instead of strictly keeping it at the designated range whenever it gets too close to it's mates. This can probably be applied to the majority of the rejecting forces but needs further testing.
+
 Performance still needs to be improved as 100 boids already have a big impact on FPS. A simple solution for this would be to add spatial partitioning.
 
 ## Demo
