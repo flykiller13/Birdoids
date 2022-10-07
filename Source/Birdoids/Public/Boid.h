@@ -31,10 +31,6 @@ private:
 	UPROPERTY( Category = Components, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true") )
 		UStaticMeshComponent* BoidMesh;
 
-	// A sphere that represents the boid's vision range.
-	UPROPERTY( Category = Components, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true") )
-		USphereComponent* VisionSphere;
-
 public:
 	// Called every frame
 	virtual void Tick( float DeltaTime ) override;
@@ -46,20 +42,20 @@ public:
 	/* Properties */
 
 	// A float that represents the boid's vision range. Is set to the vision sphere's radius.
-	UPROPERTY( VisibleAnywhere, BlueprintReadOnly, Category = "*Boid|Properties" )
-		float VisionRange;
+	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "*Boid|Properties" )
+		float VisionRange = 300.f;
 
 	// Range at which the boid will see an obstacle in front of it and act to avoid it.
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "*Boid|Properties|ObstacleAvoidance" )
-		float ObstacleAvoidanceRange = 200.f;
+		float ObstacleAvoidanceRange = 100.f;
 
 	// Force at which the boid will act to avoid obstacles.
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "*Boid|Properties|ObstacleAvoidance" )
-		float ObstacleAvoidanceForceMultiplier = 3.f;
+		float ObstacleAvoidanceForceMultiplier = 10.f;
 
 	// The range that the boid will try to keep away from it's perscepted flockmates
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "*Boid|Properties" )
-		float SeparationRange = 32.f;
+		float SeparationRange = 130.f;
 
 	/*
 	* Bool to override the random start for the boid.
@@ -81,7 +77,7 @@ public:
 
 	// Maximum speed of the boid.
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "*Boid|Properties" )
-		float MaxSpeed = 80.f;
+		float MaxSpeed = 120.f;
 
 	// The boid manager that keeps reference of the boid.
 	UPROPERTY( VisibleAnywhere, BlueprintReadWrite, Category = "*Boid|Properties", meta = (ExposeOnSpawn = "true"))
@@ -101,12 +97,12 @@ public:
 	// Weight 0-1 for Alignment rule
 	UPROPERTY( EditAnywhere, Category = "*Boid|Weights", meta = (ClampMin = "0.0"
 		, ClampMax = "1.0", UIMin = "0.0", UIMax = "1.0") )
-		float AlignmentWeight = 0.5;
+		float AlignmentWeight = 0.2;
 
 	// Weight 0-1 for Separation rule
 	UPROPERTY( EditAnywhere, Category = "*Boid|Weights", meta = (ClampMin = "0.0"
 		, ClampMax = "1.0", UIMin = "0.0", UIMax = "1.0") )
-		float SeparationWeight = 0.5;
+		float SeparationWeight = 0.7;
 
 	// Weight 0-1 for Cohesion rule
 	UPROPERTY( EditAnywhere, Category = "*Boid|Weights", meta = (ClampMin = "0.0"
@@ -156,4 +152,39 @@ public:
 
 	float BoidTickTime = 0.01f;
 	
+	/* DEBUGGING */
+
+	// Draws the velocity of the boid 
+	UFUNCTION( BlueprintNativeEvent, BlueprintCallable, Category = "*Boid|Debugging" )
+		void DrawBoidVelocity();
+
+	// True - Draws the velocity of the boid 
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "*Boid|Debugging" )
+		bool bDrawBoidVelocity;
+
+	// Draws the center of the perceived flock
+	UFUNCTION( BlueprintNativeEvent, BlueprintCallable, Category = "*Boid|Debugging" )
+		void DrawFlockCenter(FVector Center);
+
+	// True - Draws the center of the perceived flock.
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "*Boid|Debugging" )
+		bool bDrawFlockCenter;
+
+	// Draws the force applied to steer away from the perceived flock
+	UFUNCTION( BlueprintNativeEvent, BlueprintCallable, Category = "*Boid|Debugging" )
+		void DrawSeparationForce( FVector Force );
+
+	// True - Draws the force applied to steer away from the perceived flock
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "*Boid|Debugging" )
+		bool bDrawSeparationForce;
+
+	// Draws the perceived flock's velocity
+	UFUNCTION( BlueprintNativeEvent, BlueprintCallable, Category = "*Boid|Debugging" )
+		void DrawFlockVelocity( FVector FlockVelocity );
+
+	// True - Draws the perceived flock's velocity
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "*Boid|Debugging" )
+		bool bDrawFlockVelocity;
+	
+
 };

@@ -5,24 +5,21 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "DrawDebugHelpers.h"
 #include "BoidManager.h"
+#include "DrawDebugHelpers.h"
 #include "Engine/World.h"
 
 // Sets default values
 ABoid::ABoid()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	// Create components and set attachment
 	RootComponent = CreateDefaultSubobject<USceneComponent>( TEXT( "Root" ) );
 
 	BoidMesh = CreateDefaultSubobject<UStaticMeshComponent>( TEXT( "Boid Mesh" ) );
 	BoidMesh->SetupAttachment( RootComponent );
-
-	VisionSphere = CreateDefaultSubobject<USphereComponent>( TEXT( "Vision Sphere" ) );
-	VisionSphere->SetupAttachment( RootComponent );
-
-	VisionRange = VisionSphere->GetScaledSphereRadius();
+	BoidMesh->SetGenerateOverlapEvents( false ); // Prevents the engine from checking for overlaps, increasing FPS.
 }
 
 // Called when the game starts or when spawned
@@ -41,9 +38,6 @@ void ABoid::BeginPlay()
 		// Give the boid a random direction and speed
 		CurrentVelocity = FMath::VRand() * ((MaxSpeed + MinSpeed) / 2);
 	}
-
-	// Set vision range
-	VisionRange = VisionSphere->GetScaledSphereRadius();
 
 	GetWorldTimerManager().SetTimer( BoidTimerHandle, this, &ABoid::BoidTick, BoidTickTime, true );
 }
@@ -72,10 +66,12 @@ void ABoid::BoidTick()
 	{
 
 		FlockVel = GetFlockVelocity() * AlignmentWeight;
+		DrawFlockVelocity( FlockVel );
 
 		FlockCenter = GetOffsetToFlockCenter() * CohesionWeight;
 
 		SeparationForce = GetSeparationForce() * SeparationWeight;
+		DrawSeparationForce( SeparationForce );
 
 	}
 
@@ -90,6 +86,7 @@ void ABoid::BoidTick()
 	}
 
 	CurrentVelocity = CurrentVelocity.GetClampedToSize( MinSpeed, MaxSpeed ); // Clamp velocity to min-max speed
+	DrawBoidVelocity();
 
 	float InterpSpeed = 10;
 
@@ -123,7 +120,8 @@ FVector ABoid::GetOffsetToFlockCenter_Implementation()
 		if ( FlockCounter > 0 )
 		{
 			Center /= FlockCounter;
-			return (Center - GetActorLocation()) / 10;
+			DrawFlockCenter( Center );
+			return (Center - GetActorLocation()) / 100;
 		}
 		
 		return GetActorLocation(); // Only boid in the flock, center of flock is boid itself
@@ -152,7 +150,7 @@ FVector ABoid::GetFlockVelocity_Implementation()
 			AvgVelocity /= FlockCounter;
 	}
 
-	return (AvgVelocity-GetCurrentVelocity())/5;
+	return (AvgVelocity-GetCurrentVelocity())/20;
 }
 
 // Returns a vector that encourages the Boid to steer AWAY from nearby Boids.
@@ -166,14 +164,15 @@ FVector ABoid::GetSeparationForce_Implementation()
 		{
 			FVector Offset = Boid->GetActorLocation() - this->GetActorLocation();
 
-			if ( Offset.SquaredLength() <= SeparationRange*SeparationRange )
+			if ( Offset.Length() > 0 && Offset.SquaredLength() <= SeparationRange*SeparationRange )
 			{
-				SeparationDir -= Offset;
+				Offset = Offset / Offset.Length();
+				SeparationDir -= (Offset);
 			}
 		}
 	}
 
-	return SeparationDir/10;
+	return SeparationDir;
 }
 
 FVector ABoid::GetAttractionPointForce_Implementation()
@@ -225,3 +224,28 @@ bool ABoid::IsObstacleAhead_Implementation( FHitResult& Hit )
 		ECollisionChannel::ECC_GameTraceChannel1, MySphere, CollisionParams );
 }
 
+void ABoid::DrawBoidVelocity_Implementation()
+{
+	if ( bDrawBoidVelocity )
+		DrawDebugDirectionalArrow( GetWorld(), GetActorLocation(), GetActorLocation() + GetVelocity(), 1.f, FColor::Blue, false,
+			BoidTickTime, 0U, 1.f );
+}
+
+void ABoid::DrawFlockCenter_Implementation( FVector Center )
+{
+	// Put this in getoffsettoflockcenter()?
+	if ( bDrawFlockCenter )
+		DrawDebugSphere( GetWorld(), Center, 10.f, 2, FColor::Cyan );
+}
+
+void ABoid::DrawSeparationForce_Implementation( FVector Force )
+{
+	if ( bDrawSeparationForce )
+		DrawDebugDirectionalArrow( GetWorld(), GetActorLocation(), GetActorLocation() + Force, 1.f, FColor::Purple );
+}
+
+void ABoid::DrawFlockVelocity_Implementation( FVector FlockVelocity )
+{
+	if ( bDrawFlockVelocity )
+		DrawDebugDirectionalArrow( GetWorld(), GetActorLocation(), GetActorLocation() + FlockVelocity, 1.f, FColor::Yellow );
+}
