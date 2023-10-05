@@ -30,5 +30,6 @@ public:
 
 	UFUNCTION( BlueprintNativeEvent, BlueprintCallable )
 		void AddBoid( ABoid* Boid );
+	virtual void AddBoid_Implementation( ABoid* Boid );
 
 };

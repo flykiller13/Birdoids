@@ -41,7 +41,7 @@ public:
 
 	/* Properties */
 
-	// A float that represents the boid's vision range. Is set to the vision sphere's radius.
+	// A float that represents the boid's vision range.
 	UPROPERTY( EditAnywhere, BlueprintReadOnly, Category = "*Boid|Properties" )
 		float VisionRange = 300.f;
 
@@ -95,22 +95,22 @@ public:
 		float ObstacleAvoidanceWeight = 1;
 
 	// Weight 0-1 for Alignment rule
-	UPROPERTY( EditAnywhere, Category = "*Boid|Weights", meta = (ClampMin = "0.0"
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "*Boid|Weights", meta = (ClampMin = "0.0"
 		, ClampMax = "1.0", UIMin = "0.0", UIMax = "1.0") )
 		float AlignmentWeight = 0.2;
 
 	// Weight 0-1 for Separation rule
-	UPROPERTY( EditAnywhere, Category = "*Boid|Weights", meta = (ClampMin = "0.0"
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "*Boid|Weights", meta = (ClampMin = "0.0"
 		, ClampMax = "1.0", UIMin = "0.0", UIMax = "1.0") )
 		float SeparationWeight = 0.7;
 
 	// Weight 0-1 for Cohesion rule
-	UPROPERTY( EditAnywhere, Category = "*Boid|Weights", meta = (ClampMin = "0.0"
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "*Boid|Weights", meta = (ClampMin = "0.0"
 		, ClampMax = "1.0", UIMin = "0.0", UIMax = "1.0") )
 		float CohesionWeight = 0.5;
 
 	// Weight 0-1 for the attraction point
-	UPROPERTY( EditAnywhere, Category = "*Boid|Weights", meta = (ClampMin = "0.0"
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "*Boid|Weights", meta = (ClampMin = "0.0"
 		, ClampMax = "1.0", UIMin = "0.0", UIMax = "1.0") )
 		float AttractionPointWeight = 0.1;
 
