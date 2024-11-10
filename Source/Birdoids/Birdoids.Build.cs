@@ -11,7 +11,7 @@ public class Birdoids : ModuleRules
         PublicIncludePaths.AddRange(
             new string[] {
 				// ... add public include paths required here ...
-				// "Birdoids/Public/Misc"
+                "Misc"
             }
             );
 

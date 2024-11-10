@@ -9,6 +9,10 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "BoidHelper.generated.h"
 
+/*
+*	This class helps simulate the boid's obstacle avoidance.
+*	
+*/
 UCLASS()
 class BIRDOIDS_API ABoidHelper : public AActor
 {
@@ -18,15 +22,6 @@ public:
 	// Sets default values for this actor's properties
 	ABoidHelper();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float TurnFraction = 0;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float Power = 1;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		bool Draw2D = false;
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -35,15 +30,20 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-private:
+	UPROPERTY( EditAnywhere, BlueprintReadWrite )
+	float TurnFraction = 0;
+
+	UPROPERTY( EditAnywhere, BlueprintReadWrite )
+	float Power = 1;
+
+	UPROPERTY( EditAnywhere, BlueprintReadWrite )
+	bool Draw2D = false;
+	
 	UPROPERTY(EditAnywhere)
-	int NumOfPoints = 5;
+	int NumOfPoints = 500;
 
 	UPROPERTY(EditAnywhere)
-	float Radius = 200;
-
-	UPROPERTY(EditAnywhere)
-	float PointSize = 10;
+	float Radius = 400;
 
 	void PlotPoints2D();
 

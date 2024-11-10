@@ -5,7 +5,6 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "DrawDebugHelpers.h"
 #include "BoidManager.h"
-#include "DrawDebugHelpers.h"
 #include "Engine/World.h"
 
 // Sets default values

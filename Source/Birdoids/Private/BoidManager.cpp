@@ -2,6 +2,7 @@
 
 
 #include "BoidManager.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
 UBoidManager::UBoidManager()
@@ -32,13 +33,20 @@ void UBoidManager::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 	// ...
 }
 
-void UBoidManager::AddBoid_Implementation( ABoid* Boid )
+ABoid* UBoidManager::SpawnBoid( TSubclassOf<ABoid> BoidClass, FTransform Transform )
 {
-	if ( Boid )
+	ABoid* NewBoid = GetWorld()->SpawnActorDeferred<ABoid>( BoidClass, Transform );
+
+	if ( NewBoid )
 	{
-		Boid->BoidManager = this;
-		Boids.Add( Boid );
+		UGameplayStatics::FinishSpawningActor( NewBoid, Transform );
+		NewBoid->BoidManager = this;
+		Boids.Add( NewBoid );
+		return NewBoid;
 	}
+
+	return nullptr;
 }
+
 
 

@@ -28,8 +28,7 @@ public:
 	UPROPERTY( VisibleAnywhere, BlueprintReadWrite )
 		TArray<ABoid*> Boids;
 
-	UFUNCTION( BlueprintNativeEvent, BlueprintCallable )
-		void AddBoid( ABoid* Boid );
-	virtual void AddBoid_Implementation( ABoid* Boid );
+	UFUNCTION( BlueprintCallable )
+	ABoid* SpawnBoid( TSubclassOf<ABoid> BoidClass, FTransform Transform);
 
 };
